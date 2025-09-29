@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:product/Screens/add_screen.dart';
 import 'package:product/Screens/home_screen.dart';
+import 'package:product/Screens/profile_screen.dart';
+import 'package:product/Screens/switch_screen.dart';
 import 'package:product/Screens/login_screen.dart';
 import 'package:product/Screens/signup_screen.dart';
 import 'package:product/Screens/splash_screen.dart';
@@ -39,7 +42,10 @@ class MyApp extends StatelessWidget {
         "/":(context)=>SplashScreen(),
         "/login":(context)=>LoginScreen(),
         "/register" : (context)=> SignupScreen(),
+        "/switch":(context)=>SwitchScreen(),
         "/home":(context)=>HomeScreen(),
+        "/add":(context)=>AddScreen(),
+        "/profile":(context)=>ProfileScreen(),
       },
     );
   }

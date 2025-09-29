@@ -145,7 +145,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       _formKey.currentState?.saveAndValidate();
                       debugPrint(_formKey.currentState?.value.toString());
                       if (_formKey.currentState!.isValid) {
-                        Navigator.pushReplacementNamed(context, "/home");
+                        Navigator.pushReplacementNamed(context, "/switch");
                       }
                     },
                     child: const Text(

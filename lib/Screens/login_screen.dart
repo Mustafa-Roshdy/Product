@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       _formKey.currentState?.saveAndValidate();
                       debugPrint(_formKey.currentState?.value.toString());
                       if (_formKey.currentState!.isValid) {
-                        Navigator.pushReplacementNamed(context, "/home");
+                        Navigator.pushReplacementNamed(context, "/switch");
                       }
                     },
                     child: const Text(
