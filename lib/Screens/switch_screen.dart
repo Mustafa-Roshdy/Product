@@ -27,12 +27,12 @@ class _SwitchScreenState extends State<SwitchScreen> {
         backgroundColor: Colors.transparent,
         index: 0,
         items: const <Widget>[
-          Icon(Icons.home_outlined, size: 30),
-          Icon(Icons.add, size: 30),
-          Icon(Icons.perm_identity, size: 30),
+          Icon(Icons.home_outlined ,color:Colors.pink , size: 30),
+          Icon(Icons.add, color:  Colors.pink,size: 30),
+          Icon(Icons.perm_identity,color: Colors.pink, size: 30),
         ],
-        color: Colors.white,
-        buttonBackgroundColor: Colors.white,
+        color: Colors.black,
+        buttonBackgroundColor: Colors.black,
         animationCurve: Curves.easeInOut,
         animationDuration: Duration(milliseconds: 600),
         onTap: (index) {
