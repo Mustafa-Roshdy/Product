@@ -25,7 +25,7 @@ class _SignupScreenState extends State<SignupScreen> {
         children: [
           Container(
             width: double.infinity,
-            height: 200,
+            height: 210,
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.only(bottomLeft: Radius.circular(100)),
@@ -34,6 +34,7 @@ class _SignupScreenState extends State<SignupScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
 
               children: [
+                Gap(20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,6 +69,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   FormBuilderTextField(
                     name: 'name',
                     decoration: const InputDecoration(
+                      errorMaxLines: 2,
                       labelText: 'Full Name',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -82,6 +84,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     name: 'email',
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
+                      errorMaxLines: 2,
                       labelText: 'Enter Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -89,6 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
+                      FormBuilderValidators.email(),
                     ]),
                   ),
                   Gap(20),
@@ -96,6 +100,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     name: 'phone',
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
+                      errorMaxLines: 2,
                       labelText: 'Enter Phone Number',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -103,6 +108,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
+                      FormBuilderValidators.phoneNumber(),
                     ]),
                   ),
                   
@@ -111,6 +117,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     name: 'pass',
                     obscureText: true,
                     decoration: const InputDecoration(
+                      errorMaxLines: 2,
                       labelText: 'Enter Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -118,6 +125,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
+                      FormBuilderValidators.password(),
                     ]),
                   ),
                   Gap(10),

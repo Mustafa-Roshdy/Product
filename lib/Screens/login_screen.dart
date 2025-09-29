@@ -68,6 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     name: 'email',
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
+                      errorMaxLines: 2,
                       labelText: 'Enter Email',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -75,6 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
+                      FormBuilderValidators.email(),
                     ]),
                   ),
                   Gap(20),
@@ -83,6 +85,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
+                      errorMaxLines: 2,
+                      errorStyle: TextStyle(fontSize: 11),
                       labelText: 'Enter Password',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -90,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
+                      FormBuilderValidators.password(),
                     ]),
                   ),
                   Gap(100),
