@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:gap/gap.dart';
+import 'package:product/services/api_client.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,6 +15,42 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
+
+  final ApiClient _apiClient = ApiClient();
+
+  void authData(String username, String pass) async {
+    try {
+      Response res = await _apiClient.postData("/auth/login", {
+        "username": username,
+        "password": pass,
+      }, {});
+
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        const snackdemo = SnackBar(
+          content: Text('Login Done!'),
+          backgroundColor: Colors.green,
+          elevation: 10,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(5),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+        Future.delayed(Duration(seconds: 2), () async {
+          Navigator.pushReplacementNamed(context, "/switch");
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        const snackdemo = SnackBar(
+          content: Text('Login Failed'),
+          backgroundColor: Colors.red,
+          elevation: 10,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(5),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +115,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
-                      FormBuilderValidators.email(),
+                      // FormBuilderValidators.email(),
                     ]),
                   ),
                   Gap(20),
                   FormBuilderTextField(
                     name: 'pass',
-                    obscureText: true,
+                    obscureText: false,
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       errorMaxLines: 2,
@@ -94,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     validator: FormBuilderValidators.compose([
                       FormBuilderValidators.required(),
-                      FormBuilderValidators.password(),
+                      // FormBuilderValidators.password(),
                     ]),
                   ),
                   Gap(100),
@@ -107,14 +146,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(100),
                     ),
                     elevation: 5,
-                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 100),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 100,
+                    ),
 
                     onPressed: () {
                       // Validate and save the form values
                       _formKey.currentState?.saveAndValidate();
                       debugPrint(_formKey.currentState?.value.toString());
                       if (_formKey.currentState!.isValid) {
-                        Navigator.pushReplacementNamed(context, "/switch");
+                        authData(
+                          _formKey.currentState?.value["email"],
+                          _formKey.currentState?.value["pass"],
+                        );
                       }
                     },
                     child: const Text(
@@ -133,15 +178,30 @@ class _LoginScreenState extends State<LoginScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Don't have any Account?",style: TextStyle(fontWeight: FontWeight.w800,fontSize: 12,color: Colors.black) ,),
+              Text(
+                "Don't have any Account?",
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 12,
+                  color: Colors.black,
+                ),
+              ),
               Gap(5),
               InkWell(
-                child: Text("Register Now",style: TextStyle(fontWeight: FontWeight.w800,fontSize: 15,color: Colors.pink),),
+                child: Text(
+                  "Register Now",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                    color: Colors.pink,
+                  ),
+                ),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, "/register");
-                },),
+                },
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
