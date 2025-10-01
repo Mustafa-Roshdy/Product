@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,9 +14,31 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _controller;
   late Animation<double> _blinkAnimation;
 
+  void isLoging() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userdata= prefs.getString("userData");
+
+    if(userdata != null){
+Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, "/switch");
+      
+    });
+    }
+    else{
+      Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, "/login");
+     
+    });
+    }
+  }
+     
+
+
   @override
-  void initState() {
+  void initState()  {
     super.initState();
+
+    
 
     // Blink controller
     _controller = AnimationController(
@@ -31,9 +54,10 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.forward().then((_) => _controller.reverse());
 
     // Navigate after 2 seconds
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.pushReplacementNamed(context, "/login");
-    });
+    isLoging();
+    
+
+    
   }
 
   @override

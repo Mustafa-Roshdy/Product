@@ -41,6 +41,8 @@ dependencies:
   dio: ^5.9.0
   pretty_dio_logger: ^1.4.0
   custom_sliding_segmented_control: ^1.8.5
+  provider: ^6.1.5+1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

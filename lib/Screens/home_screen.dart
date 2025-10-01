@@ -1,82 +1,12 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:product/Model/product_model.dart';
-import 'package:product/services/api_client.dart';
+import 'package:product/Provider/product_provider.dart';
+import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  List<ProductElement> _product = [];
-  final List<String> _cat = [];
-
-  final ApiClient _apiClient = ApiClient();
-
-  void getProductData() async {
-    try {
-      Response res = await _apiClient.getData("/products", {});
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        Product product = Product.fromJson(res.data);
-        if(product.products !=null){
-          setState(() {
-           _product = product.products!;
-           });
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) print(e);
-    }
-  }
-
-  void getCategories() async {
-    try {
-      Response res = await _apiClient.getData("/products/category-list", {});
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        setState(() {
-          // _cat =res.data;
-          // res.data.map((item)=>_cat.add(item.toString()));
-          for (int i = 0; i < res.data.length; i++) {
-            _cat.add(res.data[i].toString());
-          }
-        });
-        print(_cat);
-      }
-    } catch (e) {
-      if (kDebugMode) print(e);
-    }
-  }
-
-  void getProductDataByCategory(String category) async {
-    try {
-      Response res = await _apiClient.getData("/products/category/$category",{});
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        Product product = Product.fromJson(res.data);
-        if(product.products!=null){
-          setState(() {
-           _product = product.products!;
-           });
-        }
-        
-      }
-    } catch (e) {
-      if (kDebugMode) print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getProductData();
-    getCategories();
-  }
-
+  // List<ProductElement> _product = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,13 +49,18 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text('Settings'),
               onTap: () => Navigator.pop(context),
             ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, "/login");
-              },
+            Consumer<ProductProvider>(
+              builder: (context,productProvider,child) {
+                return ListTile(
+                  leading: Icon(Icons.logout),
+                  title: Text('Logout'),
+                  onTap: () {
+                    productProvider.logout();
+                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, "/login");
+                  },
+                );
+              }
             ),
           ],
         ),
@@ -154,148 +89,158 @@ class _HomeScreenState extends State<HomeScreen> {
 
       body: Column(
         children: [
-          SizedBox(
-            height: 60,
-            child: _cat.isEmpty
-                ? Center(child: CircularProgressIndicator(color: Colors.pink))
-                : SizedBox(
-                    height: 40,
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        CustomSlidingSegmentedControl<int>(
-                          initialValue: 0,
-                          children: {
-                            // -1: Text("All"),
-                            // for (int i = 0; i < _cat.length; i++)
-                            //   i: Text(_cat[i], style: TextStyle(fontSize: 14)),
-                            0: Text("All"),
-                            for (int i = 0; i < _cat.length; i++)
-                              i + 1: Text(
-                                _cat[i],
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black,
-                                ),
+          Consumer<ProductProvider>(
+            builder: (context,productProvider,child) {
+              return SizedBox(
+                height: 60,
+                child:productProvider.cat.isEmpty
+                //  _cat.isEmpty
+                    ? Center(child: CircularProgressIndicator(color: Colors.pink))
+                    : SizedBox(
+                        height: 40,
+                        child: ListView(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            CustomSlidingSegmentedControl<int>(
+                              initialValue: 0,
+                              children: {
+                                // -1: Text("All"),
+                                // for (int i = 0; i < _cat.length; i++)
+                                //   i: Text(_cat[i], style: TextStyle(fontSize: 14)),
+                                0: Text("All"),
+                                for (int i = 0; i < productProvider.cat.length; i++)
+                                  i + 1: Text(
+                                    productProvider.cat[i],
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                // 1:Text("hello"),
+                                //  2:Text("hello"),
+                                //   3:Text("hello"),
+                                //    4:Text("hello"),
+                              },
+                              decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
                               ),
-                            // 1:Text("hello"),
-                            //  2:Text("hello"),
-                            //   3:Text("hello"),
-                            //    4:Text("hello"),
-                          },
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          thumbDecoration: BoxDecoration(
-                            color: Colors.pink,
-                            borderRadius: BorderRadius.circular(6),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(.3),
-                                blurRadius: 4.0,
-                                spreadRadius: 1.0,
-                                offset: Offset(0.0, 2.0),
+                              thumbDecoration: BoxDecoration(
+                                color: Colors.pink,
+                                borderRadius: BorderRadius.circular(6),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(.3),
+                                    blurRadius: 4.0,
+                                    spreadRadius: 1.0,
+                                    offset: Offset(0.0, 2.0),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                          onValueChanged: (index) {
-                            if(index==0){
-                              getProductData();
-                            }
-                            else{
-                              index=index-1;
-                              getProductDataByCategory(_cat[index]);
-                            }
-                            
-                          },
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              onValueChanged: (index) {
+                                if(index==0){
+                                  productProvider.getProduct();
+                                }
+                                else{
+                                  index=index-1;
+                                  productProvider.getProductByCat(productProvider.cat[index]);
+                                }
+                                
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+              );
+            }
           ),
 
-          Expanded(
-            child: _product.isEmpty
-                ? Center(child: CircularProgressIndicator(color: Colors.pink))
-                : ListView.builder(
-                    itemCount: _product.length,
-                    itemBuilder: (context, index) {
-                      final product = _product[index];
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        elevation: 5,
-                        margin: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            gradient: LinearGradient(
-                              colors: [Colors.pink.shade50, Colors.white],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+          Consumer<ProductProvider>(
+            builder: (context,productProvider,child) {
+              return Expanded(
+                child: productProvider.product.isEmpty
+                // _product.isEmpty
+                    ? Center(child: CircularProgressIndicator(color: Colors.pink))
+                    : ListView.builder(
+                        itemCount: productProvider.product.length,
+                        itemBuilder: (context, index) {
+                          final product = productProvider.product[index];
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                          ),
-                          child: Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  bottomLeft: Radius.circular(15),
-                                ),
-                                child: Image.network(
-                                  product.thumbnail ?? "",
-                                  height: 100,
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 8,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.title ?? "",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black87,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 6),
-                                      Text(
-                                        "\$${product.price!.toStringAsFixed(2)}",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.pink.shade400,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                            elevation: 5,
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                gradient: LinearGradient(
+                                  colors: [Colors.pink.shade50, Colors.white],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      bottomLeft: Radius.circular(15),
+                                    ),
+                                    child: Image.network(
+                                      product.thumbnail ?? "",
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.title ?? "",
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black87,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 6),
+                                          Text(
+                                            "\$${product.price!.toStringAsFixed(2)}",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.pink.shade400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              );
+            }
           ),
         ],
       ),
