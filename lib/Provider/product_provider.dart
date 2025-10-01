@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/widgets.dart';
 import 'package:product/Model/product_model.dart';
 import 'package:product/services/prodcut_services.dart';

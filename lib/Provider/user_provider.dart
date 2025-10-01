@@ -1,12 +1,7 @@
 import 'dart:convert';
-
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:product/Model/user_model.dart';
-import 'package:product/services/api_client.dart';
 import 'package:product/services/auth_services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
