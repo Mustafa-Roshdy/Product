@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       errorMaxLines: 2,
-                      labelText: 'Enter Email',
+                      labelText: 'Enter Username',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(100)),
                       ),
